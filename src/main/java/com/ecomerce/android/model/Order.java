@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -48,4 +49,15 @@ public class Order implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="userName")
 	private Customer customer;
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 }

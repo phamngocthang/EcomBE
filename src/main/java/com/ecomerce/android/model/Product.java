@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -54,4 +55,14 @@ public class Product implements Serializable {
 	@JoinColumn(name="brandId")
 	private Brand brand;
 
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 }

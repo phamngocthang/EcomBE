@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -38,4 +39,16 @@ public class Lineitem implements Serializable {
 	@ManyToOne()
 	@JoinColumn(name = "options_ID")
 	private Option option;
+
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 }

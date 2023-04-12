@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -33,6 +34,17 @@ public class Brand implements Serializable {
 
 	@Column(name="update_at")
 	private Timestamp updateAt;
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 
 	//bi-directional many-to-one association to Product
 	@OneToMany(mappedBy="brand")

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,17 @@ public class User implements UserDetails {
 
 	@OneToOne(mappedBy="user")
 	private Customer customer;
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
+	}
 
 	
 	@Transient
