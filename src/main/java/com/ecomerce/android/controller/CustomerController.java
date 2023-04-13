@@ -42,7 +42,12 @@ public class CustomerController {
     // Change Avatar Customer - Cloud
     @PostMapping(value = "/change-avatar")
     public ResponseEntity<?> changeAvatar(@RequestParam("name") String name,
-                                          @RequestParam("images") MultipartFile file) throws IOException {
-        return ResponseEntity.status(HttpStatus.OK).body(customerService.changeAvatar(name, file));
+                                          @RequestParam("images") MultipartFile file) throws Exception {
+        if(customerService.changeAvatar(name, file)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Success");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+        }
     }
 }

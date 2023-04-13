@@ -8,7 +8,7 @@ import java.io.IOException;
 public interface CustomerService {
     CustomerDTO getCustomerById(String name);
 
-    String changeAvatar(String name, MultipartFile file) throws IOException;
+    Boolean changeAvatar(String name, MultipartFile file) throws Exception;
 
 
 }

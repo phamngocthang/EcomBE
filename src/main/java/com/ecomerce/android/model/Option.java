@@ -37,7 +37,6 @@ public class Option implements Serializable {
 	@OneToMany(mappedBy="option")
 	private List<Lineitem> lineitems;
 
-
 	@ManyToOne
 	@JoinColumn(name="productId")
 	private Product product;

@@ -47,4 +47,16 @@ public class BrandController {
 			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
 		}
 	}
+
+	@PutMapping(value = "/brand")
+	public ResponseEntity<?> update(@RequestParam("nameOld") String nameOld,
+									@RequestParam("nameNew") String nameNew,
+									@RequestParam("images") MultipartFile file) throws IOException {
+		if(brandService.update(nameOld, nameNew, file)) {
+			return ResponseEntity.status(HttpStatus.OK).body("Success");
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+		}
+	}
 }

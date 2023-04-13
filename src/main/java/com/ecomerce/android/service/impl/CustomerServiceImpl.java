@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,21 +34,36 @@ public class CustomerServiceImpl implements CustomerService {
         return mapper.convertTo(customer, CustomerDTO.class);
     }
     @Override
-    public String changeAvatar(String name, MultipartFile file) throws IOException {
-        Boolean isUser = customerRepository.findById(name).isPresent();
-        if(isUser) {
-            UUID uuid = UUID.randomUUID();
-            String uuString = uuid.toString();
-            String filename = storageService.getStorageFilename(file, uuString);
-            storageService.store(file, filename); // Luu file
-            // update file
-            Customer customer = customerRepository.findById(name).get();
-            customer.setAvatar(filename);
-            customerRepository.save(customer);
-            return "Success";
+    public Boolean changeAvatar(String name, MultipartFile file) throws Exception {
+        Optional<Customer> isCustomer = customerRepository.findById(name);
+        if(isCustomer.isPresent()) {
+            Customer customer = isCustomer.get();
+            if(customer.getAvatar() == null || customer.getAvatar().equals("")) {
+                // User chưa có hình, muốn thêm hình
+                UUID uuid = UUID.randomUUID();
+                String uuString = uuid.toString();
+                String filename = storageService.getStorageFilename(file, uuString);
+                storageService.store(file, filename); // Luu file
+                // update file
+                customer.setAvatar(filename);
+                customerRepository.save(customer);
+            }
+            else {
+                // User đã có hình, xóa hình cũ, upload hình mới
+                String oldAvatar = customer.getAvatar();
+                storageService.delete(oldAvatar); // xoa hình
+                UUID uuid = UUID.randomUUID();
+                String uuString = uuid.toString();
+                String newFilename = storageService.getStorageFilename(file, uuString);
+                storageService.store(file, newFilename);
+                customer.setAvatar(newFilename); // Cập nhật trường image của đối tượng Customer
+                customerRepository.save(customer);
+            }
+
+            return true;
         }
         else  {
-            return "Failed";
+            return false;
         }
 
     }

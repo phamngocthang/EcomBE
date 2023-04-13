@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.ecomerce.android.config.uploadFile.IStorageService;
 import com.ecomerce.android.dto.BrandDTO;
@@ -65,9 +64,9 @@ public class BrandServiceImpl implements BrandService {
 		if(listBrandByName.size() >= 1) {
 			return false;
 		}
-
-		Map r = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", name));
 //		String url = cloudinary.url().transformation(new Transformation().width(600).height(500).crop("limit")).generate(name);
+		Map r = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", name));
+
 		String url = cloudinary.url().generate(name);
 
 		Brand brand = Brand.builder()
@@ -81,5 +80,30 @@ public class BrandServiceImpl implements BrandService {
 		else {
 			return false;
 		}
+	}
+
+	@Override
+	public Boolean update(String nameOld, String nameNew, MultipartFile file) throws IOException {
+		// Xóa hình ảnh cũ upload hình ảnh mới lên cloud
+		List<Brand> getBrandByName = brandReponsitory.findByName(nameOld);
+		if(getBrandByName.size() == 1) {
+			Brand brandOld = getBrandByName.get(0);
+			cloudinary.uploader().destroy(brandOld.getName(), ObjectUtils.emptyMap()); // Xoa hinh cu tren cloud
+
+			Map r = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", nameNew)); // Upload hinh moi
+			String url = cloudinary.url().generate(nameNew);
+
+			// Upload thong tin
+			brandOld.setName(nameNew);
+			brandOld.setLogo(url);
+
+			brandReponsitory.save(brandOld);
+			return true;
+		}
+		else {
+			return false;
+		}
+
+
 	}
 }

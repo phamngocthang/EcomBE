@@ -46,7 +46,6 @@ public class Brand implements Serializable {
 		this.updateAt = Timestamp.valueOf(LocalDateTime.now());
 	}
 
-	//bi-directional many-to-one association to Product
 	@OneToMany(mappedBy="brand")
 	private List<Product> products;
 }

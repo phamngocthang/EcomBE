@@ -18,4 +18,6 @@ public interface BrandService {
 
 
 	Boolean insert(String name, MultipartFile file) throws IOException;
+
+    Boolean update(String nameOld, String nameNew, MultipartFile file) throws IOException;
 }
