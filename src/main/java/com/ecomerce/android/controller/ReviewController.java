@@ -15,10 +15,11 @@ public class ReviewController {
     @Autowired
     ReviewService reviewService;
 
-    @GetMapping("/review/{productId}")
-    public ResponseEntity<?> getReviewsByProductId(@PathVariable("productId") Integer productId) {
+    @GetMapping("/review/{productId}/{username}")
+    public ResponseEntity<?> getReviewsByProductId(@PathVariable("productId") Integer productId,
+                                                    @PathVariable("username") String userName) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                reviewService.getReviewsByProductId(productId)
+                reviewService.getReviewsByProductId(productId, userName)
         );
     }
 
@@ -35,8 +36,8 @@ public class ReviewController {
             );
         }
     }
-    @PutMapping("/review/{id}/{content}")
-    public ResponseEntity<?> updateReview(@PathVariable("id") Integer reviewId, @PathVariable("content") String content) {
+    @PutMapping("/review")
+    public ResponseEntity<?> updateReview(@RequestParam("id") Integer reviewId, @RequestParam("content") String content) {
         if(reviewService.updateReview(reviewId, content)) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     "Success"

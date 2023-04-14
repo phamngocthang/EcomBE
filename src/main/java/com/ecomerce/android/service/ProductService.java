@@ -16,8 +16,11 @@ public interface ProductService {
 	ProductDTO findById(Integer id);
 
 
-	List<BrandDTO> getAllBrand();
-
 	List<ProductDTO>  getProductByBrand(Integer brandId);
 
+	List<ProductDTO> getLastedProduct();
+
+    List<ProductDTO> getPopularProduct();
+
+    List<ProductDTO> getRelatedProduct(Integer productId);
 }

@@ -2,9 +2,15 @@ package com.ecomerce.android.dto;
 
 import com.ecomerce.android.model.Customer;
 import com.ecomerce.android.model.Product;
+import lombok.*;
 
 import java.sql.Timestamp;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReviewDTO {
     private Integer reviewId;
 
@@ -14,5 +20,5 @@ public class ReviewDTO {
 
     private Timestamp updateAt;
 
-    private Customer customer;
+    private CustomerDTO customer;
 }

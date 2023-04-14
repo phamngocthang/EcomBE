@@ -16,15 +16,35 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewServiceImpl implements ReviewService {
     @Autowired
-    ReviewRepository reviewRepository;
+    private ReviewRepository reviewRepository;
     @Autowired
-    Mapper mapper;
+    private Mapper mapper;
     @Override
-    public List<ReviewDTO> getReviewsByProductId(Integer productId) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "updateAt");
-        return reviewRepository.findAll(sort)
-                .stream()
-                .map(review ->  mapper.convertTo(review, ReviewDTO.class))
+    public List<ReviewDTO> getReviewsByProductId(Integer productId, String userName) {
+//        Sort sort = Sort.by(Sort.Direction.DESC, "updateAt");
+//        return reviewRepository.findAll(sort)
+//                .stream()
+//                .map(review -> mapper.convertTo(review, ReviewDTO.class))
+//                .collect(Collectors.toList());
+
+        List<Review> getAllReviewByProductId = reviewRepository.getReviewByProductId(productId);
+        if(userName != null && !userName.isEmpty()) {
+            List<Review> sortedReview = getAllReviewByProductId.stream()
+                    .filter(review -> review.getCustomer().getUserName().equals(userName))
+                    .collect(Collectors.toList());
+
+            List<Review> ortherReview = getAllReviewByProductId.stream()
+                    .filter(review -> !review.getCustomer().getUserName().equals(userName))
+                    .collect(Collectors.toList());
+            sortedReview.addAll(ortherReview);
+
+            return sortedReview.stream()
+                    .map(review -> mapper.convertTo(review, ReviewDTO.class))
+                    .collect(Collectors.toList());
+        }
+
+        return getAllReviewByProductId.stream()
+                .map(review -> mapper.convertTo(review, ReviewDTO.class))
                 .collect(Collectors.toList());
     }
 

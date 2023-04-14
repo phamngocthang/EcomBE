@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.ecomerce.android.dto.ProductDTO;
 import com.ecomerce.android.model.Product;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,5 +44,20 @@ public class ProductController {
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ProductId not exist");
 		}
+	}
+
+	@GetMapping(value = "/product/related-product")
+	public ResponseEntity<?> getRelatedProduct(@RequestParam("id") Integer productId) {
+		return ResponseEntity.status(HttpStatus.OK).body(productService.getRelatedProduct(productId));
+	}
+
+	@GetMapping(value = "/product/lasted-product")
+	public ResponseEntity<?> getLastedProduct() {
+		return ResponseEntity.status(HttpStatus.OK).body(productService.getLastedProduct());
+	}
+
+	@GetMapping(value = "/product/popular-product")
+	public ResponseEntity<?> getPopularProduct() {
+		return ResponseEntity.status(HttpStatus.OK).body(productService.getPopularProduct());
 	}
 }

@@ -6,7 +6,7 @@ import com.ecomerce.android.model.Review;
 import java.util.List;
 
 public interface ReviewService {
-    List<ReviewDTO> getReviewsByProductId(Integer productId);
+    List<ReviewDTO> getReviewsByProductId(Integer productId, String userName);
 
     Boolean updateReview(Integer reviewId, String content);
 

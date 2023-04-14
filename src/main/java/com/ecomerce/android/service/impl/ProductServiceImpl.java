@@ -1,6 +1,5 @@
 package com.ecomerce.android.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,9 +7,8 @@ import java.util.stream.Collectors;
 import com.ecomerce.android.dto.BrandDTO;
 import com.ecomerce.android.dto.ProductDTO;
 import com.ecomerce.android.mapper.Mapper;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ecomerce.android.model.Product;
@@ -43,14 +41,52 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<BrandDTO> getAllBrand() {
-		return null;
-	}
-
-	@Override
 	public List<ProductDTO> getProductByBrand(Integer brandId) {
 		return productReponsitory.getProductByBrand(brandId)
 				.stream()
+				.map(product -> productMapper.convertTo(product, ProductDTO.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ProductDTO> getLastedProduct() {
+		Sort sort = Sort.by(Sort.Direction.DESC, "productId");
+		return productReponsitory.findAll(sort)
+				.stream()
+				.limit(6)
+				.map(product -> productMapper.convertTo(product, ProductDTO.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ProductDTO> getPopularProduct() {
+		return productReponsitory.getPopularProduct()
+				.stream()
+				.map(product -> productMapper.convertTo(product, ProductDTO.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ProductDTO> getRelatedProduct(Integer productId) {
+		// Lay cac san pham cung brand va duoc mua nhieu nhat.
+		// Neu khong du 6 sp lay them sp cung brand
+		Integer brandId = productReponsitory.findById(productId).get().getBrand().getBrandId();
+		List<Product> listRelatedProduct = productReponsitory.getRelatedProduct(brandId);
+		if(listRelatedProduct.size() < 6) {
+			List<Product> listProductByBrand = productReponsitory.getProductByBrand(brandId);
+			for(Product p : listProductByBrand) {
+				boolean exist = listRelatedProduct
+						.stream()
+						.anyMatch(product -> product.getProductId() ==  p.getProductId());
+				if(!exist) {
+					listRelatedProduct.add(p);
+				}
+				if(listRelatedProduct.size() >= 6)
+					break;
+			}
+		}
+
+		return listRelatedProduct.stream()
 				.map(product -> productMapper.convertTo(product, ProductDTO.class))
 				.collect(Collectors.toList());
 	}
