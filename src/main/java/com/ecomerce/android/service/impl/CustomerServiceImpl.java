@@ -5,6 +5,7 @@ import com.ecomerce.android.config.uploadFile.IStorageService;
 import com.ecomerce.android.dto.CustomerDTO;
 import com.ecomerce.android.mapper.Mapper;
 import com.ecomerce.android.model.Customer;
+import com.ecomerce.android.model.Option;
 import com.ecomerce.android.responsitory.CustomerRepository;
 import com.ecomerce.android.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,14 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerById(String name) {
-        Customer customer = customerRepository.findById(name).get();
-        return mapper.convertTo(customer, CustomerDTO.class);
+        Optional<Customer> isCustomer = customerRepository.findById(name);
+        if(isCustomer.isPresent())
+            return mapper.convertTo(isCustomer.get(), CustomerDTO.class);
+        else {
+            return null;
+        }
     }
+
     @Override
     public Boolean changeAvatar(String name, MultipartFile file) throws Exception {
         Optional<Customer> isCustomer = customerRepository.findById(name);

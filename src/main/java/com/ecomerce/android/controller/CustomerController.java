@@ -2,6 +2,7 @@ package com.ecomerce.android.controller;
 
 import com.ecomerce.android.config.uploadFile.IStorageService;
 import com.ecomerce.android.dto.CustomerDTO;
+import com.ecomerce.android.model.Customer;
 import com.ecomerce.android.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api")
 public class CustomerController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class CustomerController {
     @Autowired
     IStorageService storageService;
 
-    @GetMapping("/image/{id}")
+    @GetMapping("/customer/image/{id}")
     public ResponseEntity<Resource> getImage(@PathVariable("id") String name) {
         CustomerDTO customer = customerService.getCustomerById(name);
         String filename = customer.getAvatar();
@@ -40,7 +41,7 @@ public class CustomerController {
     }
 
     // Change Avatar Customer - Cloud
-    @PostMapping(value = "/change-avatar")
+    @PostMapping(value = "/customer/change-avatar")
     public ResponseEntity<?> changeAvatar(@RequestParam("name") String name,
                                           @RequestParam("images") MultipartFile file) throws Exception {
         if(customerService.changeAvatar(name, file)) {
@@ -48,6 +49,17 @@ public class CustomerController {
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+        }
+    }
+
+    @GetMapping(value = "/customer/{name}")
+    public  ResponseEntity<?> getCustomerInfor(@PathVariable("name") String name)  {
+        CustomerDTO customerDTO = customerService.getCustomerById(name);
+        if(customerDTO != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed");
         }
     }
 }
