@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 			for(Product p : listProductByBrand) {
 				boolean exist = listRelatedProduct
 						.stream()
-						.anyMatch(product -> product.getProductId() ==  p.getProductId());
+						.anyMatch(product -> product.getProductId() == p.getProductId());
 				if(!exist) {
 					listRelatedProduct.add(p);
 				}

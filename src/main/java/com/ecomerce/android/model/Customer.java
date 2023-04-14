@@ -40,6 +40,12 @@ public class Customer {
 
 	private String phonenumber;
 
+	private String province;
+
+	private String district;
+
+	private String subdistrict;
+
 	@OneToOne()
 	@JoinColumn(name="userName")
 	private User user;

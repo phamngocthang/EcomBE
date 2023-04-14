@@ -9,6 +9,5 @@ import lombok.*;
 @Builder
 public class ImageDTO {
     private int imageId;
-
     private String path;
 }

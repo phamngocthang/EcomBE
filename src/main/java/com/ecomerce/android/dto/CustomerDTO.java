@@ -19,4 +19,10 @@ public class CustomerDTO {
     private String fullname;
 
     private String phonenumber;
+
+    private String province;
+
+    private String district;
+
+    private String subdistrict;
 }
