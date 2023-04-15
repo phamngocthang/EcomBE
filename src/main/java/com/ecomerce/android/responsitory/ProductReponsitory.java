@@ -29,9 +29,9 @@ public interface ProductReponsitory extends JpaRepository<Product, Integer>{
 
     List<Product> findByPriceBetween(Double startPrice, Double endPrice);
 
-    @Query("select p from Product p where CAST(substring(p.battery, 1, 4) AS INT ) >= ?1 AND CAST(SUBSTRING(p.battery, 1, 4) AS INT ) <= ?2")
+    @Query("select p from Product p where CAST(SUBSTRING(p.battery, 1, 4) AS integer ) >= ?1 AND CAST(SUBSTRING(p.battery, 1, 4) AS integer ) <= ?2")
     List<Product> findByBatteryRange(Integer minBattery, Integer maxBattery);
 
-    @Query("select p from Product p where CAST(substring(p.screen, 1, 3) AS double ) >= ?1 AND CAST(SUBSTRING(p.battery, 1, 4) AS double ) <= ?2")
+    @Query("select p from Product p where CAST(SUBSTRING(p.screen, 1, 3) AS double ) >= ?1 AND CAST(SUBSTRING(p.battery, 1, 4) AS double ) <= ?2")
     List<Product> findByScreenSizeRange(double minScreenSize, double maxScreenSize);
 }
