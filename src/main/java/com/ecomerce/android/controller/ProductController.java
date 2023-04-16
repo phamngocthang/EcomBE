@@ -60,4 +60,14 @@ public class ProductController {
 	public ResponseEntity<?> getPopularProduct() {
 		return ResponseEntity.status(HttpStatus.OK).body(productService.getPopularProduct());
 	}
+
+	@GetMapping(value = "/product/search")
+	public ResponseEntity<?> searchProduct(@RequestParam("keyword") String keyword) {
+		if(productService.searchProduct(keyword) == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không có sản phẩm nào");
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.OK).body(productService.searchProduct(keyword));
+		}
+	}
 }

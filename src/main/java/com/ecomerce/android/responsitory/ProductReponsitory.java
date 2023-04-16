@@ -34,4 +34,7 @@ public interface ProductReponsitory extends JpaRepository<Product, Integer>{
 
     @Query("select p from Product p where CAST(SUBSTRING(p.screen, 1, 3) AS double ) >= ?1 AND CAST(SUBSTRING(p.battery, 1, 4) AS double ) <= ?2")
     List<Product> findByScreenSizeRange(double minScreenSize, double maxScreenSize);
+
+    @Query(value = "select *from product WHERE MATCH(product_name, os, cpu) against (?1)", nativeQuery = true)
+    List<Product> searchProduct(String keyword);
 }

@@ -23,4 +23,6 @@ public interface ProductService {
     List<ProductDTO> getPopularProduct();
 
     List<ProductDTO> getRelatedProduct(Integer productId);
+
+    List<ProductDTO> searchProduct(String keyword);
 }

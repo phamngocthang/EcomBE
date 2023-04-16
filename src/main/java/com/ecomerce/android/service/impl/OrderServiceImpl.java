@@ -5,13 +5,13 @@ import com.ecomerce.android.mapper.Mapper;
 import com.ecomerce.android.model.*;
 import com.ecomerce.android.responsitory.OptionRepository;
 import com.ecomerce.android.responsitory.OrderRepository;
-import com.ecomerce.android.responsitory.ProductReponsitory;
 import com.ecomerce.android.responsitory.UserRepository;
 import com.ecomerce.android.service.OrderService;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -97,6 +97,21 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll().stream()
                 .map(order -> mapper.convertTo(order, OrderDTO.class))
                 .collect(Collectors.toList());
+    }
 
+    @Override
+    public List<OrderDTO> sortOrder(boolean isASC, String attribute) {
+        Sort sort = isASC ? Sort.by(Sort.Direction.ASC, attribute) : Sort.by(Sort.Direction.DESC, attribute);
+        return orderRepository.findAll(sort).stream()
+                .map(order -> mapper.convertTo(order, OrderDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderDTO> getOrderByUsername(String username) {
+        return orderRepository.getOrderByUsername(username)
+                .stream()
+                .map(order -> mapper.convertTo(order, OrderDTO.class))
+                .collect(Collectors.toList());
     }
 }

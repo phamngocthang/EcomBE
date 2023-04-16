@@ -12,4 +12,8 @@ public interface OrderService {
     boolean saveOrder(OrderDTO orderDTO);
 
     List<OrderDTO> getAllOrder();
+
+    List<OrderDTO> sortOrder(boolean isASC, String attribute);
+
+    List<OrderDTO> getOrderByUsername(String username);
 }

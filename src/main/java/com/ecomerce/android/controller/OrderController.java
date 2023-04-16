@@ -30,4 +30,17 @@ public class OrderController {
                 orderService.getAllOrder()
         );
     }
+
+    @GetMapping("/order/{isASC}/{attribute}")
+    public ResponseEntity<?> sortOrder(@PathVariable("isASC") boolean isASC,
+                                       @PathVariable("attribute") String attribute) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                orderService.sortOrder(isASC, attribute)
+        );
+    }
+
+    @GetMapping("/order/{username}")
+    public ResponseEntity<?> getOrderByUsername(@PathVariable("username") String username) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUsername(username));
+    }
 }
