@@ -40,7 +40,7 @@ public class Order implements Serializable {
 	private Timestamp updateAt;
 
 
-	@OneToMany(mappedBy="order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="order", cascade = CascadeType.PERSIST)
 	private List<Lineitem> lineitems;
 
 	@ManyToOne(fetch = FetchType.LAZY)

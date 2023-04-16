@@ -1,5 +1,6 @@
 package com.ecomerce.android.service.impl;
 
+import com.ecomerce.android.dto.LineitemDTO;
 import com.ecomerce.android.dto.OrderDTO;
 import com.ecomerce.android.mapper.Mapper;
 import com.ecomerce.android.model.*;
@@ -16,7 +17,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.sound.sampled.Line;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,10 +83,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean saveOrder(OrderDTO orderDTO) {
         Order order = mapper.convertTo(orderDTO, Order.class);
+        order.getLineitems().forEach(lineitem -> {
+            lineitem.setOrder(order);
+        });
+
         double totalPrice = order.getLineitems().stream()
                 .mapToDouble(Lineitem -> Lineitem.getQuantity() * Lineitem.getOption().getPrice())
                 .reduce(0, (subtotal, element) -> subtotal + element);
         order.setTotalPrice(totalPrice);
+
         Order savedOrder = orderRepository.save(order);
         if(savedOrder != null) {
             sendmailOrder(order, savedOrder.getTotalPrice(), savedOrder.getUpdateAt());
