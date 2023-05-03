@@ -17,12 +17,22 @@ public class CustomerDTO {
     private String avatar;
 
     private String fullname;
-
     private String phonenumber;
+    private Integer codeProvince;
+    private Integer codeDistrict;
+    private Integer codeSubDistrict;
 
-    private String province;
-
-    private String district;
-
-    private String subdistrict;
+    @Override
+    public String toString() {
+        return "CustomerDTO{" +
+                "userName='" + userName + '\'' +
+                ", address='" + address + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", fullname='" + fullname + '\'' +
+                ", phonenumber='" + phonenumber + '\'' +
+                ", codeProvince=" + codeProvince +
+                ", codeDistrict=" + codeDistrict +
+                ", codeSubDistrict=" + codeSubDistrict +
+                '}';
+    }
 }

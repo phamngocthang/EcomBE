@@ -28,4 +28,5 @@ public interface UserService{
 	
 	public List<UserDTO> findAll();
 
+    boolean changePassword(String username, String oldPassword, String newPassword);
 }

@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import javax.sound.sampled.Line;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
 
             html += "</tbody></table>" +
                     "<p>Tổng tiền hóa đơn: " + totalPrice + "</p>" +
-                    "<p>Ngày đặt hàng: " + updateAt + "</p>" +
+                    "<p>Ngày đặt hàng: " +  updateAt.toLocalDateTime().toLocalDate() + "</p>" +
                     "<p>Cảm ơn quý khách đã mua hàng của chúng tôi.</p></body></html>";
 
             helper.setTo(email);

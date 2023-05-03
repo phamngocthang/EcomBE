@@ -40,11 +40,14 @@ public class Customer {
 
 	private String phonenumber;
 
-	private String province;
+	@Column(name = "code_province")
+	private Integer codeProvince;
 
-	private String district;
+	@Column(name = "code_district")
+	private Integer codeDistrict;
 
-	private String subdistrict;
+	@Column(name = "code_subdistrict")
+	private Integer codeSubDistrict;
 
 	@OneToOne()
 	@JoinColumn(name="userName")

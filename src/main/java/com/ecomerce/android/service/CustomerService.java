@@ -11,4 +11,5 @@ public interface CustomerService {
     Boolean changeAvatar(String name, MultipartFile file) throws Exception;
 
 
+    void updateCustomer(CustomerDTO customerDTO);
 }

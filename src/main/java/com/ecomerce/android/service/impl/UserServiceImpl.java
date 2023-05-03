@@ -1,18 +1,11 @@
 package com.ecomerce.android.service.impl;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
-import com.cloudinary.utils.ObjectUtils;
-import com.ecomerce.android.dto.ImageDTO;
 import com.ecomerce.android.dto.UserDTO;
 import com.ecomerce.android.mapper.Mapper;
-import com.ecomerce.android.model.Customer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.ecomerce.android.model.User;
 import com.ecomerce.android.responsitory.UserRepository;
 import com.ecomerce.android.service.UserService;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -32,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	Mapper mapper;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public <S extends User> boolean save(S entity) {
 		return userRepository.save(entity) != null;
@@ -81,4 +76,22 @@ public class UserServiceImpl implements UserService {
 				.collect(Collectors.toList());
 	}
 
+
+	@Override
+	public boolean changePassword(String username, String oldPassword, String newPassword) {
+		Optional<User> isUser = userRepository.findById(username);
+		// User khong dung
+		if(!isUser.isPresent()) {
+			return false;
+		}
+		User user = isUser.get();
+		// Mat khau cu khong dung
+		if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
+			return false;
+		}
+		String hashedPassword = passwordEncoder.encode(newPassword);
+		user.setPassword(hashedPassword);
+		userRepository.save(user);
+		return true;
+	}
 }

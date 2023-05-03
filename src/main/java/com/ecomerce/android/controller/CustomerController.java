@@ -5,10 +5,7 @@ import com.ecomerce.android.dto.CustomerDTO;
 import com.ecomerce.android.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,13 +32,13 @@ public class CustomerController {
             contentType = MediaType.IMAGE_PNG_VALUE;
         }
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).body(file);
-
     }
 
     // Change Avatar Customer - Cloud
     @PostMapping(value = "/customer/change-avatar")
     public ResponseEntity<?> changeAvatar(@RequestParam("name") String name,
                                           @RequestParam("images") MultipartFile file) throws Exception {
+        System.out.println("name :" + name);
         if(customerService.changeAvatar(name, file)) {
             return ResponseEntity.status(HttpStatus.OK).body("Success");
         }
@@ -60,4 +57,10 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed");
         }
     }
+    @PostMapping(value = "/customer")
+    public ResponseEntity<?> updateCustomer(@RequestBody CustomerDTO customerDTO) {
+        customerService.updateCustomer(customerDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Success");
+    }
+
 }

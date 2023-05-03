@@ -5,14 +5,14 @@ import com.ecomerce.android.config.uploadFile.IStorageService;
 import com.ecomerce.android.dto.CustomerDTO;
 import com.ecomerce.android.mapper.Mapper;
 import com.ecomerce.android.model.Customer;
-import com.ecomerce.android.model.Option;
+import com.ecomerce.android.model.User;
 import com.ecomerce.android.responsitory.CustomerRepository;
 import com.ecomerce.android.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,12 +65,19 @@ public class CustomerServiceImpl implements CustomerService {
                 customer.setAvatar(newFilename); // Cập nhật trường image của đối tượng Customer
                 customerRepository.save(customer);
             }
-
             return true;
         }
         else  {
             return false;
         }
+
+    }
+    @Override
+    public void updateCustomer(CustomerDTO customerDTO) {
+        Customer customer = mapper.convertTo(customerDTO, Customer.class);
+        String getAvatar = customerRepository.findById(customer.getUserName()).get().getAvatar();
+        customer.setAvatar(getAvatar);
+        customerRepository.save(customer);
 
     }
 }
