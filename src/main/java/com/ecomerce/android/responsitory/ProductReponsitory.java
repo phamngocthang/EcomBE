@@ -16,7 +16,7 @@ public interface ProductReponsitory extends JpaRepository<Product, Integer>{
     @Query(value = "select count(*) from Product p group by p.brand.brandId")
     List<Object[]> getAllBrand();
 
-    @Query(value = "select o.product from Option o, Lineitem l where o.optionId = l.option.optionId GROUP BY " +
+    @Query(value = "select o.product from Option o, Lineitem l where o.optionId = l.option.optionId and o.status = 1 GROUP BY " +
             "o.product.productId order by count(o.product.productId) DESC, o.product.productId ASC")
     List<Product> getPopularProduct();
 

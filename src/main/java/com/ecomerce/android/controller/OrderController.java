@@ -1,6 +1,7 @@
 package com.ecomerce.android.controller;
 
 import com.ecomerce.android.dto.OrderDTO;
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,13 @@ public class OrderController {
     @PostMapping("/order")
     public ResponseEntity<?> save(@RequestBody OrderDTO order) {
         if(orderService.saveOrder(order)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Success");
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new ResponseObject("Success", "Update Customer Successfully", "")
+            );
         }
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Error");
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("Failed", "Error", "")
+        );
     }
 
     @GetMapping("/order")

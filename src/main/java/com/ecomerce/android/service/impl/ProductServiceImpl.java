@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import com.ecomerce.android.dto.HomeViewDTO;
 import com.ecomerce.android.dto.ProductDTO;
 import com.ecomerce.android.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.ecomerce.android.model.Image;
 import com.ecomerce.android.model.Product;
 import com.ecomerce.android.responsitory.ProductReponsitory;
 import com.ecomerce.android.service.ProductService;
@@ -50,21 +53,41 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductDTO> getLastedProduct() {
+	public List<HomeViewDTO> getLastedProduct() {
 		Sort sort = Sort.by(Sort.Direction.DESC, "productId");
-		return productReponsitory.findAll(sort)
-				.stream()
-				.limit(6)
-				.map(product -> productMapper.convertTo(product, ProductDTO.class))
-				.collect(Collectors.toList());
+		List<Product> ListLastedProduct = productReponsitory.findAll(sort).stream().limit(6).toList();
+		List<HomeViewDTO> ListLastedProductDTO = productReponsitory.findAll(sort)
+		.stream()
+		.limit(6)
+		.map(product -> productMapper.convertTo(product,HomeViewDTO.class))
+		.collect(Collectors.toList());
+		
+		IntStream.range(0,ListLastedProduct.size()).forEach(i -> {
+			ListLastedProductDTO.get(i).setImage(ListLastedProduct.get(i).getOptions().get(0).getImages().get(0).getPath());
+		});
+		return ListLastedProductDTO;
+		
+//		return productReponsitory.findAll(sort)
+//				.stream()
+//				.limit(6)
+//				.map(product -> productMapper.convertToLastedProductDto(product))
+//				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ProductDTO> getPopularProduct() {
-		return productReponsitory.getPopularProduct()
+	public List<HomeViewDTO> getPopularProduct() {
+		List<Product> ListPopularProduct = productReponsitory.getPopularProduct().stream().limit(6).toList();
+		List<HomeViewDTO> listPopularProductDTO = productReponsitory.getPopularProduct()
 				.stream()
-				.map(product -> productMapper.convertTo(product, ProductDTO.class))
+				.limit(6)
+				.map(product -> productMapper.convertTo(product, HomeViewDTO.class))
 				.collect(Collectors.toList());
+		IntStream.range(0,ListPopularProduct.size())
+		.forEach(i -> {
+			listPopularProductDTO.get(i).setPrice(ListPopularProduct.get(i).getOptions().get(1).getPrice());
+			listPopularProductDTO.get(i).setImage(ListPopularProduct.get(i).getOptions().get(1).getImages().get(0).getPath());
+		});
+		return listPopularProductDTO;
 	}
 
 	@Override

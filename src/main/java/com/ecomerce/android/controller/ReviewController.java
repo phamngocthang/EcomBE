@@ -1,5 +1,6 @@
 package com.ecomerce.android.controller;
 
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.dto.ReviewDTO;
 import com.ecomerce.android.model.Review;
 import com.ecomerce.android.service.ReviewService;
@@ -27,12 +28,12 @@ public class ReviewController {
     public ResponseEntity<?> insertReview(@RequestBody Review review) {
         if(reviewService.insertReview(review)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    "Success"
+                    new ResponseObject("OK", "Insert Product successfully", "")
             );
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    "Failed"
+                    new ResponseObject("Failed", "Error", "")
             );
         }
     }
@@ -40,12 +41,12 @@ public class ReviewController {
     public ResponseEntity<?> updateReview(@RequestParam("id") Integer reviewId, @RequestParam("content") String content) {
         if(reviewService.updateReview(reviewId, content)) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    "Success"
+                    new ResponseObject("OK", "Update Review Successfully", "")
             );
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    "Failed"
+                    new ResponseObject("Failed", "Error", "")
             );
         }
     }
@@ -54,12 +55,12 @@ public class ReviewController {
     public ResponseEntity<?> deleteReview(@PathVariable("id") Integer reviewId) {
         if(reviewService.deleteReivew(reviewId)) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    "Success"
+                    new ResponseObject("OK", "Delete Product Successfully", "")
             );
         }
         else {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    "Failed"
+                    new ResponseObject("Failed", "Cannot find product to delete", "")
             );
         }
     }

@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.ecomerce.android.config.uploadFile.IStorageService;
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.dto.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class UserController {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setRole("ROLE_ADMIN");
 			User = user;
-			userService.save(User);
+			System.out.print(user.getEmail());
 			System.out.println(User.getUserName() + " " + User.getEmail());
 			responseDTO.setHttpcode(HttpStatus.CREATED);
 		} else {
@@ -137,11 +138,16 @@ public class UserController {
 	public ResponseEntity<?> updatePassword(@RequestParam("username") String username,
 											@RequestParam("oldPassword") String oldPassword,
 											@RequestParam("newPassword") String newPassword) {
-		if(userService.changePassword(username, oldPassword, newPassword)) {
-			return ResponseEntity.status(HttpStatus.OK).body("Success");
+		UserDTO userDTO = userService.changePassword(username, oldPassword, newPassword);
+		if(userDTO.getUserName() != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject("Success", "Update Password Successfully", userDTO)
+			);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("Failed", "Error", "")
+			);
 		}
 	}
 

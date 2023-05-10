@@ -2,6 +2,7 @@ package com.ecomerce.android.controller;
 
 import com.ecomerce.android.config.uploadFile.IStorageService;
 import com.ecomerce.android.dto.CustomerDTO;
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -40,10 +41,14 @@ public class CustomerController {
                                           @RequestParam("images") MultipartFile file) throws Exception {
         System.out.println("name :" + name);
         if(customerService.changeAvatar(name, file)) {
-            return ResponseEntity.status(HttpStatus.OK).body("Success");
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("Success", "Avatar update successful", "")
+            );
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("Success", "Avatar update failed", "")
+            );
         }
     }
 
@@ -51,16 +56,22 @@ public class CustomerController {
     public  ResponseEntity<?> getCustomerInfor(@PathVariable("name") String name)  {
         CustomerDTO customerDTO = customerService.getCustomerById(name);
         if(customerDTO != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("Success", "Find Customer Successfully", customerDTO)
+            );
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("Failed", "Not Customer In DB", "")
+            );
         }
     }
     @PostMapping(value = "/customer")
     public ResponseEntity<?> updateCustomer(@RequestBody CustomerDTO customerDTO) {
         customerService.updateCustomer(customerDTO);
-        return ResponseEntity.status(HttpStatus.OK).body("Success");
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("Success", "Update Customer Successfully", "")
+        );
     }
 
 }

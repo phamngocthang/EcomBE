@@ -3,6 +3,7 @@ package com.ecomerce.android.controller;
 import java.util.Optional;
 
 import com.ecomerce.android.dto.ProductDTO;
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.model.Product;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ecomerce.android.service.ProductService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 @RestController
@@ -20,6 +23,9 @@ import com.ecomerce.android.service.ProductService;
 public class ProductController {
 	@Autowired
 	private ProductService productService;
+	private Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
 	// Lấy tất cả sản phẩm theo brandId
 	@GetMapping(value = "/product/{brandId}")
@@ -39,10 +45,14 @@ public class ProductController {
 	public ResponseEntity<?> findById(@RequestParam("id") Integer productId) {
 		ProductDTO productDTO = productService.findById(productId);
 		if(productDTO != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(productDTO);
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject("Success", "Find Product Successfully", productDTO)
+			);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ProductId not exist");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+					new ResponseObject("Failed", "Not Product In DB", "")
+			);
 		}
 	}
 
@@ -53,21 +63,25 @@ public class ProductController {
 
 	@GetMapping(value = "/product/lasted-product")
 	public ResponseEntity<?> getLastedProduct() {
-		return ResponseEntity.status(HttpStatus.OK).body(productService.getLastedProduct());
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(productService.getLastedProduct()));
 	}
 
 	@GetMapping(value = "/product/popular-product")
 	public ResponseEntity<?> getPopularProduct() {
-		return ResponseEntity.status(HttpStatus.OK).body(productService.getPopularProduct());
+		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(productService.getPopularProduct()));
 	}
 
 	@GetMapping(value = "/product/search")
 	public ResponseEntity<?> searchProduct(@RequestParam("keyword") String keyword) {
 		if(productService.searchProduct(keyword) == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không có sản phẩm nào");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+					new ResponseObject("Failed", "Not Product In DB", "")
+			);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.OK).body(productService.searchProduct(keyword));
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject("Success", "Find Customer Successfully",productService.searchProduct(keyword))
+			);
 		}
 	}
 

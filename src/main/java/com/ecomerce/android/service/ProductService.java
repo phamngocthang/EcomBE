@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ecomerce.android.dto.BrandDTO;
+import com.ecomerce.android.dto.HomeViewDTO;
 import com.ecomerce.android.dto.ProductDTO;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,9 @@ public interface ProductService {
 
 	List<ProductDTO>  getProductByBrand(Integer brandId);
 
-	List<ProductDTO> getLastedProduct();
+	List<HomeViewDTO> getLastedProduct();
 
-    List<ProductDTO> getPopularProduct();
+    List<HomeViewDTO> getPopularProduct();
 
     List<ProductDTO> getRelatedProduct(Integer productId);
 

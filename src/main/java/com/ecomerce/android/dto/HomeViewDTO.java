@@ -1,5 +1,5 @@
 package com.ecomerce.android.dto;
-
+import com.google.gson.annotations.SerializedName;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +12,16 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BrandDTO {
+public class HomeViewDTO {
+	
+	
+	private Integer id;
+	
+	@SerializedName("title")
+	private String productName;
+	
+	private String image;
+	
+	private Double price;
 
-	private Integer brandId;
-
-	private String name;
-
-	private String logo;
-
-	private Integer ProductAmount;
 }

@@ -78,20 +78,20 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public boolean changePassword(String username, String oldPassword, String newPassword) {
+	public UserDTO changePassword(String username, String oldPassword, String newPassword) {
 		Optional<User> isUser = userRepository.findById(username);
 		// User khong dung
 		if(!isUser.isPresent()) {
-			return false;
+			return new UserDTO();
 		}
 		User user = isUser.get();
 		// Mat khau cu khong dung
 		if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
-			return false;
+			return new UserDTO();
 		}
 		String hashedPassword = passwordEncoder.encode(newPassword);
 		user.setPassword(hashedPassword);
-		userRepository.save(user);
-		return true;
+		User userNew = userRepository.save(user);
+		return mapper.convertTo(userNew, UserDTO.class);
 	}
 }

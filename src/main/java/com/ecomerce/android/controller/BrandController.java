@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.ecomerce.android.config.uploadFile.IStorageService;
+import com.ecomerce.android.dto.ResponseObject;
 import com.ecomerce.android.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,14 @@ public class BrandController {
 	public ResponseEntity<?> insert(@RequestParam("name") String name,
 										@RequestParam("images") MultipartFile file) throws IOException {
 		if(brandService.insert(name, file)) {
-			return ResponseEntity.status(HttpStatus.CREATED).body("Success");
+			return ResponseEntity.status(HttpStatus.CREATED).body(
+					new ResponseObject("Success", "Insert Brand Successfully", "")
+			);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("Failed", "Brand has already in DB", "")
+			);
 		}
 	}
 
@@ -53,10 +58,14 @@ public class BrandController {
 									@RequestParam("nameNew") String nameNew,
 									@RequestParam("images") MultipartFile file) throws IOException {
 		if(brandService.update(nameOld, nameNew, file)) {
-			return ResponseEntity.status(HttpStatus.OK).body("Success");
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject("Success", "Update Brand Successfully", "")
+			);
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Failed");
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("Failed", "Brand has already in DB", "")
+			);
 		}
 	}
 }
