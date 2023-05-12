@@ -49,22 +49,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Boolean updateReview(Integer reviewId, String content) {
+    public ReviewDTO updateReview(Integer reviewId, Integer rate, String content) {
         Optional<Review> isReview = reviewRepository.findById(reviewId);
-        if(isReview.isPresent()) {
-            Review newReview = isReview.get();
-            newReview.setContent(content);
-            reviewRepository.save(newReview);
-            return true;
-        }
-        else {
-            return false;
-        }
+
+        Review newReview = isReview.get();
+        newReview.setContent(content);
+        newReview.setRate(rate);
+        return mapper.convertTo(reviewRepository.save(newReview), ReviewDTO.class);
     }
 
     @Override
-    public Boolean insertReview(Review review) {
-        return reviewRepository.save(review) != null ? true : false;
+    public ReviewDTO insertReview(ReviewDTO reviewDTO) {
+        Review review = mapper.convertTo(reviewDTO, Review.class);
+        return mapper.convertTo(reviewRepository.save(review), ReviewDTO.class);
     }
 
     @Override

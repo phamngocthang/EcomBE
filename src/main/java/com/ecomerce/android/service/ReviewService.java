@@ -8,9 +8,9 @@ import java.util.List;
 public interface ReviewService {
     List<ReviewDTO> getReviewsByProductId(Integer productId, String userName);
 
-    Boolean updateReview(Integer reviewId, String content);
+    ReviewDTO updateReview(Integer reviewId, Integer rate, String content);
 
-    Boolean insertReview(Review review);
+    ReviewDTO insertReview(ReviewDTO reviewDTO);
 
     Boolean deleteReivew(Integer reviewId);
 }

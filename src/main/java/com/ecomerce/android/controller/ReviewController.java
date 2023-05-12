@@ -25,30 +25,19 @@ public class ReviewController {
     }
 
     @PostMapping("/review")
-    public ResponseEntity<?> insertReview(@RequestBody Review review) {
-        if(reviewService.insertReview(review)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ResponseObject("OK", "Insert Product successfully", "")
-            );
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("Failed", "Error", "")
-            );
-        }
+    public ResponseEntity<?> insertReview(@RequestBody ReviewDTO reviewDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                reviewService.insertReview(reviewDTO)
+        );
+
     }
     @PutMapping("/review")
-    public ResponseEntity<?> updateReview(@RequestParam("id") Integer reviewId, @RequestParam("content") String content) {
-        if(reviewService.updateReview(reviewId, content)) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("OK", "Update Review Successfully", "")
-            );
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("Failed", "Error", "")
-            );
-        }
+    public ResponseEntity<?> updateReview(@RequestParam("id") Integer reviewId,
+                                          @RequestParam("rate") Integer rate,
+                                          @RequestParam("content") String content) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                reviewService.updateReview(reviewId, rate, content)
+        );
     }
 
     @DeleteMapping("/review/{id}")

@@ -20,7 +20,7 @@ public class OrderController {
     public ResponseEntity<?> save(@RequestBody OrderDTO order) {
         if(orderService.saveOrder(order)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ResponseObject("Success", "Update Customer Successfully", "")
+                    new ResponseObject("Success", "Update Order Successfully", "")
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(

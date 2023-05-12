@@ -10,4 +10,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query("select r from Review r where r.product.productId = ?1 order by r.updateAt DESC")
     List<Review> getReviewByProductId(Integer productId);
+
+    @Query(value = "INSERT INTO review(product_ID,)", nativeQuery = true)
+    void InsertReview();
 }

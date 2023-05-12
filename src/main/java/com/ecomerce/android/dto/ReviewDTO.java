@@ -21,4 +21,6 @@ public class ReviewDTO {
     private Timestamp updateAt;
 
     private CustomerDTO customer;
+
+    private ProductDTO product;
 }
