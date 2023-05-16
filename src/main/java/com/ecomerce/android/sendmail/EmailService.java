@@ -35,7 +35,7 @@ public class EmailService {
             responseDTO.setMessage("OTP Has Been Sent!!!");
         }
         catch (Exception e) {
-        	System.out.print(e);
+        	System.out.print("test"+ e);
         	responseDTO.setMessage("Wrong When Sent OTP!!!");
         }
         return isSent;

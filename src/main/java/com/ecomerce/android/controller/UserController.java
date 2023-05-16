@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import com.ecomerce.android.dto.EmailDTO;
 import com.ecomerce.android.dto.ResponseDTO;
 import com.ecomerce.android.jwt.service.JwtService;
+import com.ecomerce.android.model.Customer;
 import com.ecomerce.android.model.User;
 import com.ecomerce.android.sendmail.OtpService;
+import com.ecomerce.android.service.CustomerService;
 import com.ecomerce.android.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +39,9 @@ public class UserController {
 	
 	@Autowired
 	private OtpService otpService;
+	
+	@Autowired
+	private CustomerService customerService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -71,7 +76,7 @@ public class UserController {
 		
 		if(otpService.generateOtp(user.getEmail(), responseDTO)) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			user.setRole("ROLE_ADMIN");
+			user.setRole("ROLE_USER");
 			User = user;
 			System.out.print(user.getEmail());
 			System.out.println(User.getUserName() + " " + User.getEmail());
@@ -85,8 +90,9 @@ public class UserController {
 	
 	@RequestMapping(value = "/SignUp/Verify", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> createUser(@RequestParam Integer otp, @RequestParam String email) {
-		if(otpService.validateOTP(email, otp, responseDTO)) {	
-			if(userService.save(User)) {
+		if(otpService.validateOTP(email, otp, responseDTO)) {
+			Customer customer = new Customer(User.getUsername(),1,1,1);
+			if(userService.save(User) && customerService.save(customer)) {
 				responseDTO.setMessage("Create User Success!!");
 				responseDTO.setHttpcode(HttpStatus.CREATED);
 			}else {
@@ -115,7 +121,8 @@ public class UserController {
 
 		try {
 			if (userService.checkLogin(user)) {
-				responseDTO.setMessage(jwtService.generateTokenLogin(user.getEmail()));
+				Optional<com.ecomerce.android.model.User> checkuser = userService.loadUserByEmail(user.getEmail());
+				responseDTO.setMessage(jwtService.generateTokenLogin(user.getEmail(),checkuser.get().getRole()));
 				responseDTO.setHttpcode(HttpStatus.OK);
 			} else {
 				responseDTO.setMessage("Wrong userId or password");
@@ -131,6 +138,54 @@ public class UserController {
 	@RequestMapping(value="/logout", method = RequestMethod.GET)
     public ResponseEntity<String> logout(HttpServletRequest request, @RequestBody User user){
 		return null;
+       
+    }
+	@RequestMapping(value="/getUserName", method = RequestMethod.GET)
+    public ResponseEntity<ResponseDTO> getUserName(HttpServletRequest request, @RequestParam("email") String email){
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("");
+		responseDTO.setHttpcode(null);
+
+		try {
+			if (userService.getUsernameByEmail(email) != null) {
+				responseDTO.setMessage(userService.getUsernameByEmail(email));
+				responseDTO.setHttpcode(HttpStatus.OK);
+			} else {
+				responseDTO.setMessage("Not Found User Name");
+				responseDTO.setHttpcode(HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception ex) {
+			responseDTO.setMessage("Server Error");
+			responseDTO.setHttpcode(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return ResponseEntity.status(responseDTO.getHttpcode()).body(responseDTO);
+       
+    }
+	@RequestMapping(value="/SignUp/check-signup", method = RequestMethod.GET)
+    public ResponseEntity<ResponseDTO> getAllUserName(HttpServletRequest request,
+    		@RequestParam("username") String username,
+    		@RequestParam("email") String email){
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("");
+		responseDTO.setHttpcode(null);
+
+		try {
+			List<String> listUsername = userService.getAllUsername();
+			List<String> listEmail = userService.getAllEmail();
+			
+			if (listUsername.contains(username) || listEmail.contains(email) ) {
+				responseDTO.setMessage("Check User Sign Up Fail");
+				responseDTO.setHttpcode(HttpStatus.BAD_REQUEST);
+			} else {
+				responseDTO.setMessage("Check User Sign Up Success");
+				responseDTO.setHttpcode(HttpStatus.OK);
+			}
+		} catch (Exception ex) {
+			System.out.print(ex.toString());
+			responseDTO.setMessage("Server Error");
+			responseDTO.setHttpcode(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return ResponseEntity.status(responseDTO.getHttpcode()).body(responseDTO);
        
     }
 

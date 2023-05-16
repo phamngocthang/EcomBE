@@ -1,29 +1,40 @@
 package com.ecomerce.android.service.impl;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.ecomerce.android.dto.HomeViewDTO;
 import com.ecomerce.android.dto.ProductDTO;
 import com.ecomerce.android.mapper.Mapper;
+import com.ecomerce.android.model.Option;
+import com.ecomerce.android.responsitory.OptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.ecomerce.android.model.Image;
 import com.ecomerce.android.model.Product;
 import com.ecomerce.android.responsitory.ProductReponsitory;
 import com.ecomerce.android.service.ProductService;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductReponsitory productReponsitory;
+
+	@Autowired
+	private OptionRepository optionRepository;
 	@Autowired
 	private Mapper productMapper;
+
+	@Autowired
+	Cloudinary cloudinary;
 
 	@Override
 	public List<ProductDTO> findAll() {
@@ -140,5 +151,27 @@ public class ProductServiceImpl implements ProductService {
 				.filter(filterScreen::contains)
 				.map(product -> productMapper.convertTo(product, ProductDTO.class))
 				.collect(Collectors.toList());
+	}
+
+
+	@Override
+	public Boolean updateImage(Integer id, MultipartFile file) throws IOException {
+		// Xóa hình ảnh cũ upload hình ảnh mới lên cloud
+		Option option = optionRepository.findById(id).get();
+		if(option != null) {
+			cloudinary.uploader().destroy("option" + option.getOptionId(), ObjectUtils.emptyMap()); // Xoa hinh cu tren cloud
+
+			Map r = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", "option" + option.getOptionId())); // Upload hinh moi
+			String url = cloudinary.url().generate("option" + option.getOptionId());
+
+			// Upload thong tin
+			option.getImages().get(0).setPath(url);
+
+			optionRepository.save(option);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

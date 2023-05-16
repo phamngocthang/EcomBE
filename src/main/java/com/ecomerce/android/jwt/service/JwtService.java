@@ -32,6 +32,7 @@ import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 public class JwtService {
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
+	public static final String ROLE = "role";
 	public static final String SECRET_KEY = "11111111111111111111111111111111";
 	public static final int EXPIRE_TIME = 86400000;
 	private static final String BEARER_PREFIX = "Bearer ";
@@ -68,7 +69,7 @@ public class JwtService {
 //	}
 	
 	//JWE
-	public String generateTokenLogin(String username) {
+	public String generateTokenLogin(String username, String role) {
 	    String token = null;
 	    try {
 	      // Create HMAC signer
@@ -76,6 +77,7 @@ public class JwtService {
 	      // Trình tạo để xây dựng các bộ xác nhận quyền sở hữu JSON Web Token (JWT).
 	      JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
 	      builder.claim(USERNAME, username);
+	      builder.claim(ROLE, role);
 	      builder.expirationTime(generateExpirationDate());
 	      JWTClaimsSet claimsSet = builder.build();
 	      JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, EncryptionMethod.A128CBC_HS256);
@@ -157,6 +159,8 @@ public class JwtService {
 		try {
 			JWTClaimsSet claims = getClaimsFromToken(token);
 			username = claims.getStringClaim(USERNAME);
+			String role = claims.getStringClaim(ROLE);
+			System.out.print("ROLE" + role);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -24,6 +24,12 @@ public interface UserService{
 	
 	Optional<User> loadUserByEmail(String email);
 	
+	String getUsernameByEmail(String email);
+	
+	List<String> getAllUsername();
+	
+	List<String> getAllEmail();
+	
 	public void deleteById(String userName);
 	
 	public List<UserDTO> findAll();
