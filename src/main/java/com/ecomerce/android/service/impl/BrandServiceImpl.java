@@ -103,7 +103,5 @@ public class BrandServiceImpl implements BrandService {
 		else {
 			return false;
 		}
-
-
 	}
 }

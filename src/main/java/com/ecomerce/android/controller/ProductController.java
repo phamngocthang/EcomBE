@@ -1,5 +1,6 @@
 package com.ecomerce.android.controller;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import com.ecomerce.android.dto.ProductDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ecomerce.android.service.ProductService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -41,13 +43,25 @@ public class ProductController {
 	}
 
 	// Lấy 1 sản phẩm theo Id sản phẩm
+//	@GetMapping(value = "/product/get")
+//	public ResponseEntity<?> findById(@RequestParam("id") Integer productId) {
+//		ProductDTO productDTO = productService.findById(productId);
+//		if(productDTO != null) {
+//			return ResponseEntity.status(HttpStatus.OK).body(
+//					new ResponseObject("Success", "Find Product Successfully", productDTO)
+//			);
+//		}
+//		else {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//					new ResponseObject("Failed", "Not Product In DB", "")
+//			);
+//		}
+//	}
 	@GetMapping(value = "/product/get")
 	public ResponseEntity<?> findById(@RequestParam("id") Integer productId) {
 		ProductDTO productDTO = productService.findById(productId);
 		if(productDTO != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(
-					new ResponseObject("Success", "Find Product Successfully", productDTO)
-			);
+			return ResponseEntity.status(HttpStatus.OK).body(productDTO);
 		}
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -96,5 +110,20 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK).body(
 				productService.filterProduct(startPrice, endPrice, startBattery, endBattery, startScreen, endScreen)
 		);
+	}
+
+	@PutMapping(value = "/product/update-img")
+	public ResponseEntity<?> update(@RequestParam("id") Integer optionId,
+									@RequestParam("images") MultipartFile file) throws IOException {
+		if(productService.updateImage(optionId, file)) {
+			return ResponseEntity.status(HttpStatus.OK).body(
+					new ResponseObject("Success", "Update Brand Successfully", "")
+			);
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+					new ResponseObject("Failed", "Brand has already in DB", "")
+			);
+		}
 	}
 }

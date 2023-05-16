@@ -59,4 +59,13 @@ public class Customer {
 
 	@OneToMany(mappedBy="customer")
 	private List<Review> reviews;
+
+
+	public Customer(String userName, Integer codeProvince, Integer codeDistrict, Integer codeSubDistrict) {
+		super();
+		this.userName = userName;
+		this.codeProvince = codeProvince;
+		this.codeDistrict = codeDistrict;
+		this.codeSubDistrict = codeSubDistrict;
+	}
 }

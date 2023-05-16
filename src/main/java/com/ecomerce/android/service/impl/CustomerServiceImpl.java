@@ -80,4 +80,10 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.save(customer);
 
     }
+
+	@Override
+	public <S extends Customer> boolean save(S entity) {
+		// TODO Auto-generated method stub
+		return customerRepository.save(entity) != null;
+	}
 }

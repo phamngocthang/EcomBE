@@ -13,7 +13,6 @@ import java.util.List;
 public class OptionDTO {
     private Integer optionId;
     private String ram;
-
     private String rom;
 
     private Double price;
